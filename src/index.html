@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <title>情報科学実験I 最終課題</title>
+        <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script>
+$(document).ready(function(){
+    var procTime = 0;
+    $('#resultFrame').load(function(){
+        if(procTime == 0){
+            return false;
+        }
+        $("#log tbody tr:last td:nth-child(2)").html(((new Date()).getTime() - procTime) /1000);
+        $("a[href=#result]").parent("li").removeClass("disabled");
+        $("#progA,#progB,#progC").removeClass("disabled");
+        $('#tab a[href="#result"]').tab('show');
+        procTime = 0;
+    });
+    $("#progA,#progB,#progC").on("click",function(){
+        if(procTime != 0){
+            console.error("現在処理中です。");
+            return false;
+        }
+        if($("#input").val() == ""){
+            console.error("タグを入れてください。");
+            return false;
+        }
+        $("#progA,#progB,#progC").addClass("disabled");
+        procTime = (new Date()).getTime();
+        var url = this.id+".php?tag="+encodeURIComponent($("#input").val());
+        $("#log tbody").append('<tr><td>'+this.id+'</td><td>N/A</td><td>'+$("#input").val()+'</td></tr>');
+        $('#resultFrame').attr({'src':url});
+    });
+    $(".nav-tabs li a[data-toggle=tab]").on("click", function(e) {
+        if ($(this).parent("li").hasClass("disabled")) {
+            e.preventDefault();
+            return false;
+        }
+    });
+    $(window).on("resize load",function() {
+        $('#resultFrame').height($(window).height() - $("#tab").height() - 10);
+    });
+});
+        </script>
+        <script type="text/javascript">
+$(function(){
+    $('#upfile').change(function() {
+        $('#dummy_file').val($(this).val().replace("C:\\fakepath\\", ""));
+    });
+})
+        </script>
+    </head>
+    <body>
+        <ul id="tab" class="nav nav-tabs">
+            <li class="active"><a href="#query" data-toggle="tab">検索画面</a></li>
+            <li class="disabled"><a href="#result" data-toggle="tab">検索結果</a></li>
+            <li><a href="#caption" data-toggle="tab">自由課題</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="query">
+                <div class="page-header">
+                    <h1>情報科学実験I 最終課題 <small>実装Ａ～Ｃ(A7班)</small></h1>
+                </div>
+                <form role="form">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">検索するタグを入力してください</label>
+                        <input type="text" class="form-control" id="input" placeholder="例. dog, car, flower等">
+                    </div>
+                    <div class="btn-group btn-group-justified">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary btn-lg" id="progA">実装Ａで検索</button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-success btn-lg" id="progB">実装Ｂで検索</button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-info btn-lg" id="progC">実装Ｃで検索</button>
+                        </div>
+                    </div>
+                </form>
+                <h2>実験結果</h2>
+                <table class="table table-condensed　table-hover" id="log">
+                    <thead>
+                        <tr>
+                            <th>実装</th>
+                            <th>処理時間(s)</th>
+                            <th>タグ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane" id="caption">
+                <div class="page-header">
+                    <h1>情報科学実験I 最終課題 <small>自由課題 キャプション生成</small></h1>
+                </div>
+                <form class="form-inline" enctype="multipart/form-data" action="ImageCaption.php" name="form" method="post">
+                    <div class="form-group" style="width:200px;">
+                        <div class="input-group">
+                            <input type="file" id="upfile" name="upfile" style="display: none;">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button" onclick="$('#upfile').click();"><i class="glyphicon glyphicon-folder-open"></i></button>
+                            </span>
+                            <div class="input-group">
+                                <input id="dummy_file" type="text" class="form-control" placeholder="select file..." disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" name="submit" class="btn btn-primary">upload</button>
+                </form>
+            </div>
+            <div class="tab-pane" id="result">
+                <iframe id="resultFrame" src="http://lab.yokoyama.ac/" width="100%" style="height:500px;" seamless>
+            </div>
+        </div>
+    </body>
+</html>
