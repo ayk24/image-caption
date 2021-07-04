@@ -93,7 +93,7 @@ def clean_descriptions(descriptions):
             # キャプションの単語を文字列に戻す
             desc_list[i] = ' '.join(desc)
 
-# キャプションのできくしょなりをリストにする関数
+# キャプションのディクショナリをリストにする関数
 def to_vocab(descriptions):
     all_desc = set()
     for key in descriptions.keys():
